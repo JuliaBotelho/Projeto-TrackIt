@@ -1,18 +1,24 @@
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 export default function FooterMenu() {
     return (
         <>
             <FooterDiv>
-                <h3>Hábitos</h3>
-                <h3>Histórico</h3>
+                <Link to={"/habitos"}>
+                    <h3>Hábitos</h3>
+                </Link>
+                <Link to={"/historico"}>
+                    <h3>Histórico</h3>
+                </Link>
             </FooterDiv>
-            <TodayButton>
-                Hoje
-            </TodayButton>
+            <Link to={"/hoje"}>
+                <TodayButton>Hoje</TodayButton>
+            </Link>
         </>
     )
 }
+
 
 const FooterDiv = styled.div`
     background-color:#ffffff;
@@ -33,6 +39,7 @@ const FooterDiv = styled.div`
         color:#52b6ff;
         font-size: 16px;
         background-color: #ffffff;
+        text-decoration-line: none;
         :hover{
             color: #74c4ff;
         }
@@ -45,8 +52,8 @@ const TodayButton = styled.button`
         justify-content:center;
         align-items:center;
         box-sizing:border-box;
-        width:91px;
-        height:91px;
+        width:81px;
+        height:81px;
         position:fixed;
         bottom:10px;
         left:40%;

@@ -1,26 +1,109 @@
 import styled from "styled-components"
+import { useState, useContext } from "react"
+import axios from "axios"
+import { ThreeDots } from "react-loader-spinner";
+import { useNavigate } from "react-router-dom";
 
-export default function CardHabit() {
+import { AuthContext } from "../contextElements/auth"
+
+export default function CardHabit({ setHabitFormEnabled }) {
+    const days = [{ day: "D", id: 1 },
+    { day: "S", id: 2 },
+    { day: "T", id: 3 },
+    { day: "Q", id: 4 },
+    { day: "Q", id: 5 },
+    { day: "S", id: 6 },
+    { day: "S", id: 7 }]
+    const [selectedDays, setSelectedDays] = useState([])
+    const [habitName, setHabitName] = useState("")
+    const{userData} = useContext(AuthContext)
+    const [buttonSaveClicked, setbuttonSaveClicked] = useState(false)
+    const [dataHabitReceived, setdataHabitReceived] = useState(false)
+    const navigate = useNavigate()
+
+    function disableCard() {
+        setHabitFormEnabled(false)
+    }
+
+    function handleHabitName(e) {
+        setHabitName(e.target.value)
+    }
+    console.log(habitName)
+
+    function handleDay(day) {
+
+
+        if (selectedDays.includes(day.id)) {
+            const filteredDays = selectedDays.filter((d) => !(d === day.id));
+            setSelectedDays([...filteredDays]);
+            return;
+        }
+
+        setSelectedDays([...selectedDays, day.id])
+        return;
+    }
+
+     function sendHabit(e){
+        e.preventDefault()
+        const URL = "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits"
+        const config = {headers:{"Authorization": `Bearer ${userData.token}`}}
+        const body={
+            name: habitName,
+            days: selectedDays
+        }
+
+        const promise = axios.post(URL,body,config)
+
+        promise.then(()=>{
+            alert("Habito adicionado")
+            setdataHabitReceived(true) 
+            navigate("/habitos")   
+            setHabitFormEnabled(false)
+        })
+        promise.catch((err)=>{alert(err.response.data.message)})
+    } 
+
+    function saveButtonActions(e){
+        sendHabit(e)
+        setbuttonSaveClicked(true)
+    }
+
     return (
         <CardHabitLayout>
-            <input
-                name="newhabit"
-                placeholder="nome do hábito"
-            />
-            <WeekDayButtons>
-                <button>D</button>
-                <button>S</button>
-                <button>T</button>
-                <button>Q</button>
-                <button>Q</button>
-                <button>S</button>
-                <button>S</button>
-            </WeekDayButtons>
-            <ActionButtons>
-                <h3>Cancelar</h3>
-                <button>Salvar</button>
-            </ActionButtons>
+            <BackgroundRight  onSubmit={saveButtonActions} >
+                <input
+                    name="name"
+                    value={habitName}
+                    onChange={handleHabitName}
+                    type="text"
+                    placeholder="nome do hábito"
+                    required
+                />
+                <WeekDayButtons>
+                    {days.map((day, index) => <WeekDay key={index} day={day} handleDay={handleDay} selectedDays={selectedDays} />)}
+                </WeekDayButtons>
+                <ActionButtons>
+                    <h3 onClick={disableCard}>Cancelar</h3>
+                    {buttonSaveClicked?(
+                        <>{!dataHabitReceived && <button type="submit" disabled><ThreeDots color="#ffffff" height={45} width={70}/></button>}</>
+                    ):(
+                        <button type="submit">Salvar</button>
+                    )}
+                </ActionButtons>
+            </BackgroundRight>
         </CardHabitLayout>
+    )
+}
+
+function WeekDay({ day, handleDay, selectedDays }) {
+    return (
+        <>
+            {!selectedDays.includes(day.id) ? (
+                <ButtonDayNotSelected onClick={() => handleDay(day)}>{day.day}</ButtonDayNotSelected>
+            ) : (
+                <ButtonDaySelected onClick={() => handleDay(day)}>{day.day}</ButtonDaySelected>
+            )}
+        </>
     )
 }
 
@@ -41,12 +124,18 @@ const CardHabitLayout = styled.div`
         border-radius: 5px;
         border: 1px solid #d5d5d5;
         font-family: 'Lexend Deca', sans-serif;
-        color: #d5d5d5;
+        color: #666666;
         font-size: 21px;
         margin-bottom: 7px;
         padding-left:7px;  
         background-color: #ffffff; 
+        ::placeholder{
+            color: #d5d5d5;
+        } 
     }
+`
+const BackgroundRight = styled.form`
+    background-color:#ffffff;
 `
 
 const WeekDayButtons = styled.div`
@@ -56,16 +145,28 @@ const WeekDayButtons = styled.div`
     display: flex;
     justify-content:flex-start;
     align-items:center;
-    button{
-        width: 30px;
-        height:30px;
-        background-color: #ffffff;
-        border: 1px solid #d5d5d5;
-        color: #d5d5d5;
-        margin-right: 5px;
-        font-size: 20px;
-        border-radius: 5px;
-    }
+`
+
+const ButtonDaySelected = styled.button`
+    width: 30px;
+    height:30px;
+    background-color: #d5d5d5;
+    border: 1px solid #d5d5d5;
+    color: #ffffff;
+    margin-right: 5px;
+    font-size: 20px;
+    border-radius: 5px;
+`
+
+const ButtonDayNotSelected = styled.button`
+    width: 30px;
+    height:30px;
+    background-color: #ffffff;
+    border: 1px solid #d5d5d5;
+    color: #d5d5d5;
+    margin-right: 5px;
+    font-size: 20px;
+    border-radius: 5px;
 `
 
 const ActionButtons = styled.div`
@@ -77,6 +178,9 @@ const ActionButtons = styled.div`
     height:38px;
     margin-top:18px;
     button{
+        display:flex;
+        justify-content:center;
+        align-items:center;
         width: 84px;
         height: 35px;
         border-radius: 5px;

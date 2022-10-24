@@ -1,11 +1,36 @@
 import styled from "styled-components"
 import TopBar from "../components/TopBar"
 import GlobalStyle2 from "../GlobalStyle2"
+import { useEffect, useState, useContext } from "react"
 import CardHabit from "../components/CardHabit"
 import FooterMenu from "../components/FooterMenu"
+import axios from "axios"
 import CardHabitCreated from "../components/CardHabitCretaed"
 
+import { AuthContext } from "../contextElements/auth"
+
 export default function HabitsPage() {
+    const [habits, setHabits] = useState([])
+    const [habitFormEnabled, setHabitFormEnabled] = useState(false)
+    const { userData } = useContext(AuthContext)
+    const config = { headers: { "Authorization": `Bearer ${userData.token}` } }
+
+    useEffect(() => {
+        axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", config)
+            .then(res => {
+                setHabits(res.data)
+            })
+            .catch(err => {
+                alert("Algo deu errado! Por favor tente novamente")
+            })
+    }, [])
+
+    console.log(habits)
+
+    function enableHabitForm() {
+        setHabitFormEnabled(true)
+    }
+
     return (
         <>
             <HabitsPageLayout>
@@ -13,13 +38,16 @@ export default function HabitsPage() {
                 <TopBar />
                 <MyHabitsLayout>
                     <h2>Meus hábitos</h2>
-                    <button>+</button>
+                    <button onClick={enableHabitForm}>+</button>
                 </MyHabitsLayout>
-                <CardHabit />
-                <CardHabitCreated />
-                <NoHabitsLayout>
-                    <p>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</p>
-                </NoHabitsLayout>
+                {habitFormEnabled && <CardHabit setHabitFormEnabled={setHabitFormEnabled} />}
+                <>{habits.length === 0 ? (
+                    <NoHabitsLayout>
+                        <p>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</p>
+                    </NoHabitsLayout>
+                ) : (
+                    <> {habits.map((habit,index)=><CardHabitCreated key={index} habit={habit}/>)}</>
+                )}</>
             </HabitsPageLayout>
             <FooterMenu />
         </>

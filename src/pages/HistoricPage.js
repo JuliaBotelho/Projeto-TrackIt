@@ -1,10 +1,12 @@
 import styled from "styled-components";
 import TopBar from "../components/TopBar";
 import FooterMenu from "../components/FooterMenu";
+import GlobalStyle2 from "../GlobalStyle2";
 
 export default function HistoricPage() {
     return (
         <>
+            <GlobalStyle2 />
             <TopBar />
             <HistoricPageLayout>
                 <h2>Histórico</h2>

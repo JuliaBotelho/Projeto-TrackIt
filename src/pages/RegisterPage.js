@@ -4,15 +4,21 @@ import { LogoMain } from "./LoginPage";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
+import { ThreeDots } from "react-loader-spinner";
 
 export default function RegisterPage() {
     const [formregister, setFormregister] = useState({email: "", name: "", image: "", password: ""})
-    const [dataRegreceived, setDataRegreceived] = useState(undefined)
+    const [dataRegreceived, setDataRegreceived] = useState(false)
+    const [buttonClicked, setButtonClicked] = useState(false)
     const navigate = useNavigate()
 
     function handleRegisterForm(e){
         const {name,value} = e.target
         setFormregister({...formregister, [name]:value})
+    }
+
+    function buttonWasClicked (){
+        setButtonClicked(true)
     }
 
 
@@ -24,16 +30,24 @@ export default function RegisterPage() {
         axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/sign-up",body)
             .then(res => {
                 navigate("/")
-                setDataRegreceived(res.data)
+                setDataRegreceived(true)
             })
-            .catch(err => alert("Algo deu errado! Por favor tente novamente"))
+            .catch(err => {
+                alert("Algo deu errado! Por favor tente novamente")
+                setButtonClicked(false)
+            })
         
+    }
+
+    function onSubmitActions(e){
+        sendRegisterData(e)
+        buttonWasClicked()
     }
 
     return (
         <>
             <LogoMain><img src={logo} /></LogoMain>
-            <form onSubmit={sendRegisterData} >
+            <form onSubmit={onSubmitActions}>
                 <FormRegister>
                     <input
                         name="email"
@@ -41,6 +55,7 @@ export default function RegisterPage() {
                         onChange={handleRegisterForm}
                         type="email"
                         placeholder="email"
+                        required
                     />
                     <input
                         name="password"
@@ -48,6 +63,7 @@ export default function RegisterPage() {
                         onChange={handleRegisterForm}
                         type="password"
                         placeholder="senha"
+                        required
                     />
                     <input
                         name="name"
@@ -55,6 +71,7 @@ export default function RegisterPage() {
                         onChange={handleRegisterForm}
                         type="text"
                         placeholder="nome"
+                        required
                     />
                     <input
                         name="image"
@@ -62,8 +79,13 @@ export default function RegisterPage() {
                         onChange={handleRegisterForm}
                         type="url"
                         placeholder="foto"
+                        required
                     />
-                    <button type="submit">Cadastrar</button>
+                    {buttonClicked? (
+                        <>{!dataRegreceived && <button type="submit" disabled><ThreeDots color="#ffffff" height={45} width={70}/></button>}</>
+                    ):(
+                        <button type="submit">Cadastrar</button>
+                    )}
                 </FormRegister>
             </form>
             <Link to={"/"}>
@@ -94,6 +116,9 @@ const FormRegister = styled.div`
         
     }
     button{
+        display:flex;
+        justify-content:center;
+        align-items: center;
         width: 312px;
         height: 45px;
         border-radius: 5px;

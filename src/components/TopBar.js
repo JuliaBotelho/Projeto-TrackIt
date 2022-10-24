@@ -1,10 +1,19 @@
 import styled from "styled-components";
+import { useState, useContext } from "react";
+
+import { AuthContext } from "../contextElements/auth";
 
 export default function TopBar(){
+    const{userData} = useContext(AuthContext)
+
+    function teste(){
+        console.log(userData)
+    }
+
     return(
         <TopLayout>
-            <h1>TrackIt</h1>
-            <img src={"https://i.pinimg.com/736x/40/7f/89/407f891dfaadad2a4904282a1e66eabb.jpg"}/>
+            <h1 onClick={teste}>TrackIt</h1>
+            <img src={userData.image}/>
         </TopLayout>
     )
 }

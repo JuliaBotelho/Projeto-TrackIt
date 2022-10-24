@@ -1,26 +1,62 @@
+import axios from "axios";
 import styled from "styled-components";
+import { useContext } from "react";
 
-export default function CardHabitCreated() {
+import { AuthContext } from "../contextElements/auth";
+
+
+export default function CardHabitCreated({ habit }) {
+    const days = [{ day: "D", id: 1 },
+    { day: "S", id: 2 },
+    { day: "T", id: 3 },
+    { day: "Q", id: 4 },
+    { day: "Q", id: 5 },
+    { day: "S", id: 6 },
+    { day: "S", id: 7 }]
+
+    const { userData } = useContext(AuthContext)
+    const config = { headers: { "Authorization": `Bearer ${userData.token}` } }
+
+
+
+    function deleteHabit() {
+        if (window.confirm("Deseja mesmo deletar esse hábito?") === true) {
+            axios.delete(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${habit.id}`, config)
+                .then(res => {
+                    alert("habito deletado")
+                })
+                .catch(err => {
+                    alert("Algo deu errado! Por favor tente novamente")
+                })
+        }
+    }
+
     return (
         <CreatedCardLayout>
             <CardTop>
-                <h2>Titulo do Hábito</h2>
-                <ion-icon name="trash-outline"></ion-icon>
+                <h2>{habit.name}</h2>
+                <ion-icon name="trash-outline" onClick={deleteHabit}></ion-icon>
             </CardTop>
             <WeekDayButtons>
-                <button>D</button>
-                <button>S</button>
-                <button>T</button>
-                <button>Q</button>
-                <button>Q</button>
-                <button>S</button>
-                <button>S</button>
+                {days.map((day, index) => <WeekDay key={index} day={day} days={habit.days} />)}
             </WeekDayButtons>
         </CreatedCardLayout>
     )
 }
 
+function WeekDay({ day, days }) {
+    return (
+        <>
+            {!days.includes(day.id) ? (
+                <ButtonDayNotSelected >{day.day}</ButtonDayNotSelected>
+            ) : (
+                <ButtonDaySelected >{day.day}</ButtonDaySelected>
+            )}
+        </>
+    )
+}
 const CreatedCardLayout = styled.div`
+    margin-bottom:10px;
     width:340px;
     height:91px;
     padding:16px;
@@ -41,17 +77,29 @@ const WeekDayButtons = styled.div`
     display: flex;
     justify-content:flex-start;
     align-items:center;
-    button{
-        width: 30px;
-        height:30px;
-        background-color: #ffffff;
-        border: 1px solid #d5d5d5;
-        color: #d5d5d5;
-        margin-right: 5px;
-        font-size: 20px;
-        border-radius: 5px;
-    }
 `
+const ButtonDaySelected = styled.button`
+    width: 30px;
+    height:30px;
+    background-color: #d5d5d5;
+    border: 1px solid #d5d5d5;
+    color: #ffffff;
+    margin-right: 5px;
+    font-size: 20px;
+    border-radius: 5px;
+`
+
+const ButtonDayNotSelected = styled.button`
+    width: 30px;
+    height:30px;
+    background-color: #ffffff;
+    border: 1px solid #d5d5d5;
+    color: #d5d5d5;
+    margin-right: 5px;
+    font-size: 20px;
+    border-radius: 5px;
+`
+
 const CardTop = styled.div`
     background-color:#ffffff;
     width: 301px;
