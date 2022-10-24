@@ -13,7 +13,7 @@ export default function TopBar(){
     return(
         <TopLayout>
             <h1 onClick={teste}>TrackIt</h1>
-            <img src={userData.image}/>
+            <img data-identifier="avatar" src={userData.image}/>
         </TopLayout>
     )
 }

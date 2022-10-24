@@ -12,6 +12,7 @@ import { AuthContext } from "../contextElements/auth"
 export default function HabitsPage() {
     const [habits, setHabits] = useState([])
     const [habitFormEnabled, setHabitFormEnabled] = useState(false)
+    const [buttonDeleteClicked, setbuttonDeleteClicked] = useState(false)
     const { userData } = useContext(AuthContext)
     const config = { headers: { "Authorization": `Bearer ${userData.token}` } }
 
@@ -23,7 +24,7 @@ export default function HabitsPage() {
             .catch(err => {
                 alert("Algo deu errado! Por favor tente novamente")
             })
-    }, [])
+    }, [habitFormEnabled,buttonDeleteClicked])
 
     console.log(habits)
 
@@ -38,15 +39,15 @@ export default function HabitsPage() {
                 <TopBar />
                 <MyHabitsLayout>
                     <h2>Meus hábitos</h2>
-                    <button onClick={enableHabitForm}>+</button>
+                    <button data-identifier="create-habit-btn" onClick={enableHabitForm}>+</button>
                 </MyHabitsLayout>
                 {habitFormEnabled && <CardHabit setHabitFormEnabled={setHabitFormEnabled} />}
                 <>{habits.length === 0 ? (
                     <NoHabitsLayout>
-                        <p>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</p>
+                        <p data-identifier="no-habit-message">Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</p>
                     </NoHabitsLayout>
                 ) : (
-                    <> {habits.map((habit,index)=><CardHabitCreated key={index} habit={habit}/>)}</>
+                    <> {habits.map((habit,index)=><CardHabitCreated key={index} habit={habit} setbuttonDeleteClicked={setbuttonDeleteClicked} buttonDeleteClicked={buttonDeleteClicked}/>)}</>
                 )}</>
             </HabitsPageLayout>
             <FooterMenu />

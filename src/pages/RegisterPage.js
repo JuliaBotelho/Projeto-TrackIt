@@ -7,27 +7,27 @@ import axios from "axios";
 import { ThreeDots } from "react-loader-spinner";
 
 export default function RegisterPage() {
-    const [formregister, setFormregister] = useState({email: "", name: "", image: "", password: ""})
+    const [formregister, setFormregister] = useState({ email: "", name: "", image: "", password: "" })
     const [dataRegreceived, setDataRegreceived] = useState(false)
     const [buttonClicked, setButtonClicked] = useState(false)
     const navigate = useNavigate()
 
-    function handleRegisterForm(e){
-        const {name,value} = e.target
-        setFormregister({...formregister, [name]:value})
+    function handleRegisterForm(e) {
+        const { name, value } = e.target
+        setFormregister({ ...formregister, [name]: value })
     }
 
-    function buttonWasClicked (){
+    function buttonWasClicked() {
         setButtonClicked(true)
     }
 
 
-    function sendRegisterData(e){
+    function sendRegisterData(e) {
         e.preventDefault()
 
         const body = formregister
-        
-        axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/sign-up",body)
+
+        axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/sign-up", body)
             .then(res => {
                 navigate("/")
                 setDataRegreceived(true)
@@ -36,10 +36,10 @@ export default function RegisterPage() {
                 alert("Algo deu errado! Por favor tente novamente")
                 setButtonClicked(false)
             })
-        
+
     }
 
-    function onSubmitActions(e){
+    function onSubmitActions(e) {
         sendRegisterData(e)
         buttonWasClicked()
     }
@@ -50,6 +50,7 @@ export default function RegisterPage() {
             <form onSubmit={onSubmitActions}>
                 <FormRegister>
                     <input
+                        data-identifier="input-email"
                         name="email"
                         value={formregister.email}
                         onChange={handleRegisterForm}
@@ -58,6 +59,7 @@ export default function RegisterPage() {
                         required
                     />
                     <input
+                        data-identifier="input-password"
                         name="password"
                         value={formregister.password}
                         onChange={handleRegisterForm}
@@ -66,6 +68,7 @@ export default function RegisterPage() {
                         required
                     />
                     <input
+                        data-identifier="input-name"
                         name="name"
                         value={formregister.name}
                         onChange={handleRegisterForm}
@@ -74,6 +77,7 @@ export default function RegisterPage() {
                         required
                     />
                     <input
+                        data-identifier="input-photo"
                         name="image"
                         value={formregister.image}
                         onChange={handleRegisterForm}
@@ -81,15 +85,15 @@ export default function RegisterPage() {
                         placeholder="foto"
                         required
                     />
-                    {buttonClicked? (
-                        <>{!dataRegreceived && <button type="submit" disabled><ThreeDots color="#ffffff" height={45} width={70}/></button>}</>
-                    ):(
+                    {buttonClicked ? (
+                        <>{!dataRegreceived && <button type="submit" disabled><ThreeDots color="#ffffff" height={45} width={70} /></button>}</>
+                    ) : (
                         <button type="submit">Cadastrar</button>
                     )}
                 </FormRegister>
             </form>
-            <Link to={"/"}>
-                <LoginLink>Já tem uma conta? Faça login!</LoginLink>
+            <Link to={"/"} data-identifier="back-to-login-action">
+                <LoginLink >Já tem uma conta? Faça login!</LoginLink>
             </Link>
         </>
 

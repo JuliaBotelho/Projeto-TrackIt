@@ -52,6 +52,7 @@ export default function LoginPage() {
             <LogoMain><img src={logo} /></LogoMain>
             <FormLogin  onSubmit={onSubmitLoginActions} >
                 <input
+                    data-identifier="input-email"
                     name="email"
                     type="email"
                     value={formLogin.email}
@@ -60,6 +61,7 @@ export default function LoginPage() {
                     required
                 />
                 <input
+                    data-identifier="input-password"
                     name="password"
                     type="password"
                     value={formLogin.password}
@@ -70,11 +72,11 @@ export default function LoginPage() {
                 {buttonLoginClicked? (
                         <>{!dataLogreceived && <button type="submit" disabled><ThreeDots color="#ffffff" height={45} width={70}/></button>}</>
                     ):(
-                        <button type="submit">Entrar</button>
+                        <button type="submit" data-identifier="login-btn">Entrar</button>
                     )}
             </FormLogin>
             <Link to= {"/cadastro"}>
-                <RegisterLink>Não tem uma conta? Cadastre-se</RegisterLink>
+                <RegisterLink data-identifier="sign-up-action">Não tem uma conta? Cadastre-se</RegisterLink>
             </Link>
         </>
     )

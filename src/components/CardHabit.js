@@ -7,13 +7,13 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../contextElements/auth"
 
 export default function CardHabit({ setHabitFormEnabled }) {
-    const days = [{ day: "D", id: 1 },
-    { day: "S", id: 2 },
-    { day: "T", id: 3 },
+    const days = [{ day: "D", id: 7 },
+    { day: "S", id: 1 },
+    { day: "T", id: 2 },
+    { day: "Q", id: 3 },
     { day: "Q", id: 4 },
-    { day: "Q", id: 5 },
-    { day: "S", id: 6 },
-    { day: "S", id: 7 }]
+    { day: "S", id: 5 },
+    { day: "S", id: 6 }]
     const [selectedDays, setSelectedDays] = useState([])
     const [habitName, setHabitName] = useState("")
     const{userData} = useContext(AuthContext)
@@ -72,6 +72,7 @@ export default function CardHabit({ setHabitFormEnabled }) {
         <CardHabitLayout>
             <BackgroundRight  onSubmit={saveButtonActions} >
                 <input
+                    data-identifier="input-habit-name"
                     name="name"
                     value={habitName}
                     onChange={handleHabitName}
@@ -83,11 +84,11 @@ export default function CardHabit({ setHabitFormEnabled }) {
                     {days.map((day, index) => <WeekDay key={index} day={day} handleDay={handleDay} selectedDays={selectedDays} />)}
                 </WeekDayButtons>
                 <ActionButtons>
-                    <h3 onClick={disableCard}>Cancelar</h3>
+                    <h3 data-identifier="cancel-habit-create-btn" onClick={disableCard}>Cancelar</h3>
                     {buttonSaveClicked?(
-                        <>{!dataHabitReceived && <button type="submit" disabled><ThreeDots color="#ffffff" height={45} width={70}/></button>}</>
+                        <>{!dataHabitReceived && <button type="submit" disabled><ThreeDots color="#ffffff" height={35} width={60}/></button>}</>
                     ):(
-                        <button type="submit">Salvar</button>
+                        <button type="submit" data-identifier="save-habit-create-btn">Salvar</button>
                     )}
                 </ActionButtons>
             </BackgroundRight>
@@ -110,38 +111,49 @@ function WeekDay({ day, handleDay, selectedDays }) {
 const CardHabitLayout = styled.div`
     width:340px;
     height:180px;
+    
+    margin-bottom:28px;
     padding:18px;
+
     display:flex;
     flex-direction:column;
     align-items:center;
+
     background-color: #ffffff;
     box-sizing:border-box;
-    margin-bottom:28px;
     border-radius:5px;
+
     input{
         width: 301px;
         height: 45px;
+        margin-bottom: 7px;
+        padding-left:7px;
+
         border-radius: 5px;
         border: 1px solid #d5d5d5;
+
         font-family: 'Lexend Deca', sans-serif;
         color: #666666;
         font-size: 21px;
-        margin-bottom: 7px;
-        padding-left:7px;  
+  
         background-color: #ffffff; 
+
         ::placeholder{
             color: #d5d5d5;
         } 
     }
 `
+
 const BackgroundRight = styled.form`
     background-color:#ffffff;
 `
 
 const WeekDayButtons = styled.div`
     background-color: #ffffff;
+
     width:310px;
     height:36px;
+
     display: flex;
     justify-content:flex-start;
     align-items:center;
@@ -150,12 +162,15 @@ const WeekDayButtons = styled.div`
 const ButtonDaySelected = styled.button`
     width: 30px;
     height:30px;
-    background-color: #d5d5d5;
-    border: 1px solid #d5d5d5;
-    color: #ffffff;
     margin-right: 5px;
-    font-size: 20px;
+
+    background-color: #d5d5d5;
+
     border-radius: 5px;
+    border: 1px solid #d5d5d5;
+
+    color: #ffffff;
+    font-size: 20px;
 `
 
 const ButtonDayNotSelected = styled.button`
@@ -173,22 +188,26 @@ const ActionButtons = styled.div`
     display: flex;
     justify-content:flex-end;
     align-items: center;
+
     background-color: #ffffff;
     width:310px;
     height:38px;
     margin-top:18px;
+
     button{
         display:flex;
         justify-content:center;
         align-items:center;
+        margin-left: 20px;
+
         width: 84px;
         height: 35px;
         border-radius: 5px;
         border: 1px solid #52b6ff;
+
         background-color: #52b6ff;
         font-family: 'Lexend Deca', sans-serif;
         font-size: 16px;
-        margin-left: 20px;
         color: #ffffff;
         :hover{
             background-color: #74c4ff;

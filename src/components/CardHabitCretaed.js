@@ -5,14 +5,14 @@ import { useContext } from "react";
 import { AuthContext } from "../contextElements/auth";
 
 
-export default function CardHabitCreated({ habit }) {
-    const days = [{ day: "D", id: 1 },
-    { day: "S", id: 2 },
-    { day: "T", id: 3 },
+export default function CardHabitCreated({ habit, setbuttonDeleteClicked, buttonDeleteClicked }) {
+    const days = [{ day: "D", id: 7 },
+    { day: "S", id: 1 },
+    { day: "T", id: 2 },
+    { day: "Q", id: 3 },
     { day: "Q", id: 4 },
-    { day: "Q", id: 5 },
-    { day: "S", id: 6 },
-    { day: "S", id: 7 }]
+    { day: "S", id: 5 },
+    { day: "S", id: 6 }]
 
     const { userData } = useContext(AuthContext)
     const config = { headers: { "Authorization": `Bearer ${userData.token}` } }
@@ -23,7 +23,7 @@ export default function CardHabitCreated({ habit }) {
         if (window.confirm("Deseja mesmo deletar esse hábito?") === true) {
             axios.delete(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${habit.id}`, config)
                 .then(res => {
-                    alert("habito deletado")
+                    setbuttonDeleteClicked(!buttonDeleteClicked)
                 })
                 .catch(err => {
                     alert("Algo deu errado! Por favor tente novamente")
@@ -34,8 +34,8 @@ export default function CardHabitCreated({ habit }) {
     return (
         <CreatedCardLayout>
             <CardTop>
-                <h2>{habit.name}</h2>
-                <ion-icon name="trash-outline" onClick={deleteHabit}></ion-icon>
+                <h2 data-identifier="habit-name">{habit.name}</h2>
+                <ion-icon name="trash-outline" data-identifier="delete-habit-btn" onClick={deleteHabit}></ion-icon>
             </CardTop>
             <WeekDayButtons>
                 {days.map((day, index) => <WeekDay key={index} day={day} days={habit.days} />)}
@@ -119,10 +119,3 @@ const CardTop = styled.div`
         color:#666666;
     }
 `
-
-/* const IonIconLayout = styled.div`
-    position:fixed;
-    top: 10px;
-    right:10px;
-    font-size:17px;
-` */
